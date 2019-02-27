@@ -1,7 +1,9 @@
 # es-packd
 
 This is straight fork of Rich Harris' [packd](https://github.com/Rich-Harris/packd).
+
 Instead of delivering a UMD module, `es-packd` delivers a ES module.
+
 See [packd](https://github.com/Rich-Harris/packd) for more details.
 
 ## Credits
