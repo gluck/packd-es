@@ -171,7 +171,7 @@ async function bundleWithRollup(cwd, pkg, moduleEntry, name) {
 	});
 
 	const result = await bundle.generate({
-		format: 'umd',
+		format: 'es',
 		name
 	});
 

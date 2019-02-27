@@ -1,7 +1,7 @@
 {
-  "name": "packd",
+  "name": "packd-es",
   "version": "2.7.1",
-  "description": "Simple alternative to browserify-cdn",
+  "description": "Deliverying ES Modules from npm with all dependencies bundled",
   "scripts": {
     "start": "node server",
     "deploy": "now && now alias",
@@ -10,19 +10,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Rich-Harris/packd.git"
+    "url": "git+https://github.com/georges-gomes/packd-es.git"
   },
   "keywords": [
     "browserify",
     "bundler",
-    "npm"
+    "npm",
+    "rollup"
   ],
-  "author": "Rich Harris",
+  "author": "Georges Gomes",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Rich-Harris/packd/issues"
+    "url": "https://github.com/georges-gomes/packd-es/issues"
   },
-  "homepage": "https://github.com/Rich-Harris/packd#readme",
+  "homepage": "https://github.com/georges-gomes/packd-es#readme",
   "dependencies": {
     "browserify": "^16.2.3",
     "compression": "^1.7.0",
@@ -49,7 +50,7 @@
     "eslint": "^5.12.0"
   },
   "now": {
-    "alias": "packd",
+    "alias": "packd-es",
     "files": [
       "public",
       "server",

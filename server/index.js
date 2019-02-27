@@ -88,7 +88,7 @@ if (debugEndpoints === true) {
 	});
 }
 
-// log requests
+// log requests and CORS allow
 app.use((req, res, next) => {
 	const remoteAddr = (function() {
 		if (req.ip) return req.ip;
@@ -104,6 +104,10 @@ app.use((req, res, next) => {
 	logger.info(
 		`${remoteAddr} - - [${date}] "${req.method} ${url} HTTP/${httpVersion}"`
 	);
+
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
 	next();
 });
 
