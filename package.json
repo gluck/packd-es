@@ -4,13 +4,13 @@
   "description": "Deliverying ES Modules from npm with all dependencies bundled",
   "scripts": {
     "start": "node server",
-    "deploy": "now && now alias",
+    "deploy": "now && now --target production",
     "test": "node test/test.js",
     "postpublish": "npm run deploy"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/georges-gomes/packd-es.git"
+    "url": "git+https://github.com/divriots/packd-es.git"
   },
   "keywords": [
     "browserify",
@@ -21,17 +21,19 @@
   "author": "Georges Gomes",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/georges-gomes/packd-es/issues"
+    "url": "https://github.com/divriots/packd-es/issues"
   },
-  "homepage": "https://github.com/georges-gomes/packd-es#readme",
+  "homepage": "https://github.com/divriots/packd-es#readme",
   "dependencies": {
     "browserify": "^16.2.3",
     "compression": "^1.7.0",
+    "cors": "^2.8.5",
     "etag": "^1.8.0",
     "express": "^4.15.2",
     "is-module": "^1.0.0",
     "lru-cache": "^5.1.1",
     "minilog": "^3.1.0",
+    "now": "^15.0.6",
     "npm": "^6.6.0",
     "pretty-bytes": "^5.1.0",
     "request": "^2.81.0",

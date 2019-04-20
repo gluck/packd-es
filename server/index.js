@@ -9,12 +9,14 @@ const padRight = require('./utils/padRight.js');
 const servePackage = require('./serve-package.js');
 const logger = require('./logger.js');
 const cache = require('./cache.js');
+const cors = require('cors')
 
 const { debugEndpoints, root, tmpdir } = require('../config.js');
 
 const app = express();
 const port = process.env.PORT || 9000;
 
+app.use(cors())
 app.use(favicon(`${root}/public/favicon.ico`));
 app.use(compression());
 
@@ -90,7 +92,7 @@ if (debugEndpoints === true) {
 
 // log requests and CORS allow
 app.use((req, res, next) => {
-	const remoteAddr = (function() {
+	const remoteAddr = (function () {
 		if (req.ip) return req.ip;
 		const sock = req.socket;
 		if (sock.socket) return sock.socket.remoteAddress;
