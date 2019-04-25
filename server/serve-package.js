@@ -1,5 +1,4 @@
 const { fork } = require('child_process');
-const sander = require('sander');
 const semver = require('semver');
 const zlib = require('zlib');
 const get = require('./utils/get.js');
@@ -10,7 +9,7 @@ const etag = require('etag');
 const sha1 = require('sha1');
 
 const { sendBadRequest, sendError } = require('./utils/responses.js');
-const { root, registry, additionalBundleResHeaders } = require('../config.js');
+const { registry, additionalBundleResHeaders } = require('../config.js');
 
 function stringify(query) {
 	const str = Object.keys(query)
@@ -22,16 +21,13 @@ function stringify(query) {
 
 module.exports = function servePackage(req, res, next) {
 	if (req.method !== 'GET') return next();
-
 	const match = /^\/(?:@([^\/]+)\/)?([^@\/]+)(?:@(.+?))?(?:\/(.+?))?(?:\?(.+))?$/.exec(
 		req.url
 	);
-
 	if (!match) {
 		// TODO make this prettier
 		return sendBadRequest(res, 'Invalid module ID');
 	}
-
 	const user = match[1];
 	const id = match[2];
 	const tag = match[3] || 'latest';
@@ -55,15 +51,12 @@ module.exports = function servePackage(req, res, next) {
 
 				return sendBadRequest(res, 'invalid module');
 			}
-
 			const version = findVersion(meta, tag);
-
 			if (!semver.valid(version)) {
 				logger.error(`[${qualified}] invalid tag`);
 
 				return sendBadRequest(res, 'invalid tag');
 			}
-
 			if (version !== tag) {
 				let url = `/${meta.name}@${version}`;
 				if (deep) url += `/${deep}`;
@@ -72,7 +65,6 @@ module.exports = function servePackage(req, res, next) {
 				res.redirect(302, url);
 				return;
 			}
-
 			return fetchBundle(meta, tag, deep, query).then(zipped => {
 				logger.info(`[${qualified}] serving ${zipped.length} bytes`);
 				res.status(200);
@@ -86,7 +78,6 @@ module.exports = function servePackage(req, res, next) {
 						additionalBundleResHeaders
 					)
 				);
-
 				// FIXME(sven): calculate the etag based on the original content
 				res.setHeader('ETag', etag(zipped));
 				res.end(zipped);
@@ -94,13 +85,7 @@ module.exports = function servePackage(req, res, next) {
 		})
 		.catch(err => {
 			logger.error(`[${qualified}] ${err.message}`, err.stack);
-			const page = sander
-				.readFileSync(`${root}/server/templates/500.html`, {
-					encoding: 'utf-8'
-				})
-				.replace('__ERROR__', err.message);
-
-			sendError(res, page);
+			sendError(res, err.message);
 		});
 };
 
@@ -110,16 +95,12 @@ function fetchBundle(pkg, version, deep, query) {
 	let hash = `${pkg.name}@${version}`;
 	if (deep) hash += `_${deep.replace(/\//g, '_')}`;
 	hash += stringify(query);
-
 	logger.info(`[${pkg.name}] requested package`);
-
 	hash = sha1(hash);
-
 	if (cache.has(hash)) {
 		logger.info(`[${pkg.name}] is cached`);
 		return Promise.resolve(cache.get(hash));
 	}
-
 	if (inProgress[hash]) {
 		logger.info(`[${pkg.name}] request was already in progress`);
 	} else {
@@ -142,14 +123,12 @@ function fetchBundle(pkg, version, deep, query) {
 				return zipped;
 			});
 	}
-
 	return inProgress[hash];
 }
 
 function createBundle(hash, pkg, version, deep, query) {
 	return new Promise((fulfil, reject) => {
 		const child = fork('server/child-processes/create-bundle.js');
-
 		child.on('message', message => {
 			if (message === 'ready') {
 				child.send({
