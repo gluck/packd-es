@@ -9,8 +9,26 @@ const cors = require('cors')
 
 const app = express();
 const port = process.env.PORT || 9000;
+const whitelist = [
+	'https://stg-webcomponents-editor.firebaseapp.com',
+	'https://prd-webcomponents-editor.firebaseapp.com'
+]
 
-app.use(cors())
+if (process.env.NODE_ENV === 'production') {
+	const corsOptions = {
+		origin: (origin, callback) => {
+			if (whitelist.indexOf(origin) !== -1) {
+				callback(null, true)
+			} else {
+				callback(new Error('Not allowed by CORS'))
+			}
+		}
+	}
+	app.use(cors(corsOptions))
+} else {
+	app.use(cors())
+}
+
 app.use(compression());
 app.get('/favicon.ico', (req, res) => res.status(204));
 app.get('/_cache', (req, res) => {
