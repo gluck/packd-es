@@ -133,7 +133,7 @@ function bundle(cwd, deep, query) {
 	const moduleName = query.name || makeLegalIdentifier(pkg.name);
 
 	const entry = deep
-		? path.resolve(cwd, deep)
+		? findEntryDeep(path.resolve(cwd, deep))
 		: findEntry(
 				path.resolve(
 					cwd,
@@ -160,6 +160,46 @@ function findEntry(file) {
 	} catch (err) {
 		return `${file}.js`;
 	}
+}
+
+function findEntryDeep(file) {
+	let isFound = false;
+	let isFolder = false;
+	
+	try {
+		var stats = sander.statSync(file);
+		isFolder = stats.isDirectory();
+		isFound = true;
+	} catch (err) {
+		// Nothing found
+	}
+	
+	if (isFound && !isFolder)
+	{
+		return file;
+	}
+	else if (isFound && isFolder)
+	{
+		return lookupEntry([`${file}/index.mjs`, `${file}/index.js`]);
+	}
+
+	// Lookup extensions
+	return lookupEntry( [`${file}.mjs`, `${file}.js`] );
+}
+
+function lookupEntry(files) {
+	files.forEach( file => {
+		try {
+			const stats = sander.statSync(file);
+			return file;
+		} catch (err) {
+			// Look for next file
+		}
+	});
+
+	// Nothing match let's fail
+	info(`Can't find any entry, tried: ${files}`);
+	return files[0];
 }
 
 async function bundleWithRollup(cwd, pkg, moduleEntry, name) {

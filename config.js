@@ -2,7 +2,7 @@ const path = require('path');
 const sander = require('sander');
 
 exports.root = path.resolve(__dirname);
-exports.tmpdir = '/tmp';
+exports.tmpdir = '/tmp/packd-es-cache';
 exports.registry = 'https://registry.npmjs.org';
 
 try {
