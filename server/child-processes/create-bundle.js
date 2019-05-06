@@ -188,18 +188,20 @@ function findEntryDeep(file) {
 }
 
 function lookupEntry(files) {
-	files.forEach( file => {
+	let existingFile = undefined;
+
+	if (!files.some( file => {
 		try {
 			const stats = sander.statSync(file);
-			return file;
+			existingFile = file;
+			return true;
 		} catch (err) {
-			// Look for next file
+			return false;
 		}
-	});
-
-	// Nothing match let's fail
-	info(`Can't find any entry, tried: ${files}`);
-	return files[0];
+	}) ) {
+		info(`Can't find any entry, tried: ${files}`);
+	}
+	return existingFile;
 }
 
 async function bundleWithRollup(cwd, pkg, moduleEntry, name) {
